@@ -8,6 +8,12 @@ module.exports = {
   //   config.plugin('monaco-editor').use(MonacoWebpackPlugin)
   // },
 
+  /* 配置代理 */
+  devServer: {
+    proxy: 'http://192.168.0.133:8080'
+  },
+
+  /* 配置 plugin */
   configureWebpack: {
     plugins:[new MonacoWebpackPlugin()]
   }
