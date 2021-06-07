@@ -19,7 +19,7 @@
           </div>
           <!-- / 选择代码类型 -->
 
-          <!-- 点击运行 -->
+          <!-- 点击运行 PS:这里运行代码需要后端配置处理按照自己需求进行修改 -->
           <button @click="submitA">点击运行</button>
           <!-- / 点击运行 -->
         </div>
@@ -36,12 +36,22 @@
         <div id="abc" class="content"></div>
       </div>
     </div>
+
+    <button @click="submitCode">提交</button>
   </div>
 </template>
 
 <script>
 import * as monaco from 'monaco-editor'
 export default {
+
+  props: {
+    callback1: {
+      type: Function, // 定义传递的数据类型
+      required: true, // 必填
+    }
+  },
+
   /**
    * 数据
    */
@@ -67,9 +77,15 @@ export default {
    */
   methods: {
 
+    /* 提交代码 */
+    submitCode() {
+      this.saveEditor() // 更新代码数据
+      this.callback1({'type':this.languageType, 'code':this.oldValue}) // 给使用他的父组件返回代码
+    },
+
     /* 提交按钮 */
     async submitA() {
-      this.saveEditor() // 修改数据
+      this.saveEditor() // 更新代码数据
 
       console.log(`type:${this.languageType}, code:${this.oldValue}`)
 
@@ -78,7 +94,8 @@ export default {
 
       // 问一下用户是否运行 为了防止用户频繁点击 也可以做一个节流阀
       if (!window.confirm('确定运行吗?')) return
-      /* 使用 fetch请求 这里需要改动 */
+
+      /* 使用 fetch发起请求 这里的请求方式按照自己的需求进行变动 一般都是使用 axios 不过我为了翻遍直接用的 fetch 内置API */
       //#region
       try {
         // 使用 fetch 请求接口
@@ -96,7 +113,7 @@ export default {
           headers: {
             Authorization:
               'Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjlhMjg4ZGQ1LTQ0MzMtNDFlMi1iOTA3LWYzZTBiOWMzODBiYyJ9.uoRHNVzIUdmLDMpPgkN0ZAKFt5TAg-NtEX_YXUyqk7NXwO_7PJIA8peodrlpYhk-9ax2BrVp9G_7S1a3woXojg',
-            'Content-Type': 'application/json ',
+              'Content-Type': 'application/json ',
           },
         })
 
@@ -111,8 +128,7 @@ export default {
         // console.log(str)
       } catch (error) {
         // 用来捕捉错误并且处理错误 防止程序崩溃
-
-        // 打印错误
+        // 输出错误
         console.log(error)
       }
       //#endregion

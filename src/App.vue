@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <MonacoEditor />
+    <MonacoEditor :callback1='callback1' />
   </div>
 </template>
 
@@ -12,6 +12,12 @@ export default {
 
   components: {
     MonacoEditor
+  },
+
+  methods: {
+    callback1 (data) {
+      console.log(data)
+    }
   }
 }
 </script>
